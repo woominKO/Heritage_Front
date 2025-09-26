@@ -6,12 +6,15 @@ import MoveItemForm from "./MoveItemForm";
 function LoadingPage({ onFinish }) {
   const [phase, setPhase] = React.useState(0);
   React.useEffect(() => {
-    const t1 = setTimeout(() => setPhase(1), 800);
-    let t2;
-    if (phase === 1) {
-      t2 = setTimeout(() => { if (onFinish) onFinish(); }, 4000);
+    let t1, t2, t3;
+    if (phase === 0) {
+      t1 = setTimeout(() => setPhase(1), 800);
+    } else if (phase === 1) {
+      t2 = setTimeout(() => setPhase(2), 1600);
+    } else if (phase === 2) {
+      t3 = setTimeout(() => { if (onFinish) onFinish(); }, 2000);
     }
-    return () => { clearTimeout(t1); if (t2) clearTimeout(t2); };
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [phase, onFinish]);
   return (
     <div style={{
@@ -33,15 +36,21 @@ function LoadingPage({ onFinish }) {
         }} />
         <style>{`@keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }`}</style>
       </div>
-      {phase === 0 ? (
+      {phase === 0 && (
         <>
           <div style={{ fontSize: 22, color: "#f5d76e", fontWeight: 600, marginBottom: 10 }}>근처의 창고를 검색중이에요</div>
           <div style={{ fontSize: 15, color: "#f5d76e", opacity: 0.7 }}>잠시만 기다려주세요...</div>
         </>
-      ) : (
+      )}
+      {phase === 1 && (
         <>
           <div style={{ fontSize: 22, color: "#f5d76e", fontWeight: 600, marginBottom: 10 }}>해당 창고의 재고를 확인하고 있어요</div>
           <div style={{ fontSize: 15, color: "#f5d76e", opacity: 0.7 }}>조금만 더 기다려주세요...</div>
+        </>
+      )}
+      {phase === 2 && (
+        <>
+          <div style={{ fontSize: 22, color: "#f5d76e", fontWeight: 600, marginBottom: 10 }}>최적의 견적을 계산 중입니다...</div>
         </>
       )}
     </div>
@@ -92,7 +101,7 @@ function EstimateForm() {
   };
 
   // 날짜 스텝(2-1) 제거: 0(유형)→1(서비스)→2(가전)→3(가구)→4(출발)→5(도착)
-  const handleNext = () => setStep(step + 1);
+  const handleNext = () => setStep(step === 1 ? 3 : step + 1);
   const handleBack = () => setStep(step - 1);
 
   const handleSubmit = (e) => {
@@ -101,7 +110,7 @@ function EstimateForm() {
     setTimeout(() => {
       setLoading(false);
       setSubmitted(true);
-    }, 1800);
+    }, 4400);
   };
 
   if (loading) return <LoadingPage onFinish={() => setLoading(false)} />;
@@ -151,7 +160,11 @@ function EstimateForm() {
               cursor: "pointer",
               marginTop: 10
             }}
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              setSubmitted(false);
+              setShowReview(false);
+              setStep(3);
+            }}
           >
             다시 이어서 견적 요청하기
           </button>
@@ -389,18 +402,7 @@ function EstimateForm() {
           </>
         )}
         {/* 날짜 선택 달력: 월별/일별 요금 랜덤 표시 */}
-        {step === 2 && (
-          <DatePriceCalendar
-            selectedDate={selectedDate}
-            selectedPrice={selectedPrice}
-            onSelect={(date, price) => {
-              setSelectedDate(date);
-              setSelectedPrice(price);
-              setStep(3);
-            }}
-            onBack={handleBack}
-          />
-        )}
+
         {step === 3 && (
           <>
             <div style={{ fontWeight: 600, marginBottom: 10, fontSize: 16, textAlign: "center" }}>2-2. 옮길 가전제품 목록을 알려주세요!</div>
