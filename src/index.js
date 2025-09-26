@@ -73,7 +73,16 @@ function RegionSelectForm({ onBack, onNext }) {
   );
 }
 
-function LoadingPage() {
+function LoadingPage({ onFinish }) {
+  const [phase, setPhase] = React.useState(0);
+  React.useEffect(() => {
+    const t1 = setTimeout(() => setPhase(1), 800);
+    let t2;
+    if (phase === 1) {
+      t2 = setTimeout(() => { if (onFinish) onFinish(); }, 4000);
+    }
+    return () => { clearTimeout(t1); if (t2) clearTimeout(t2); };
+  }, [phase, onFinish]);
   return (
     <div style={{
       minHeight: "100vh",
@@ -94,8 +103,17 @@ function LoadingPage() {
         }} />
         <style>{`@keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }`}</style>
       </div>
-      <div style={{ fontSize: 22, color: "#f5d76e", fontWeight: 600, marginBottom: 10 }}>근처의 창고를 검색중이에요</div>
-      <div style={{ fontSize: 15, color: "#f5d76e", opacity: 0.7 }}>잠시만 기다려주세요...</div>
+      {phase === 0 ? (
+        <>
+          <div style={{ fontSize: 22, color: "#f5d76e", fontWeight: 600, marginBottom: 10 }}>근처의 창고를 검색중이에요</div>
+          <div style={{ fontSize: 15, color: "#f5d76e", opacity: 0.7 }}>잠시만 기다려주세요...</div>
+        </>
+      ) : (
+        <>
+          <div style={{ fontSize: 22, color: "#f5d76e", fontWeight: 600, marginBottom: 10 }}>해당 창고의 재고를 확인하고 있어요</div>
+          <div style={{ fontSize: 15, color: "#f5d76e", opacity: 0.7 }}>조금만 더 기다려주세요...</div>
+        </>
+      )}
     </div>
   );
 }
@@ -153,7 +171,7 @@ function EstimateForm() {
     }, 1800);
   };
 
-  if (loading) return <LoadingPage />;
+  if (loading) return <LoadingPage onFinish={() => setLoading(false)} />;
   if (showReview) {
     // 후기/리뷰 이미지 샘플 (6개)
     const reviewImages = Array(6).fill("/review.png");
