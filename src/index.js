@@ -1,7 +1,36 @@
 import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
-import MoveTypeForm from "./MoveTypeForm";
-import MoveItemForm from "./MoveItemForm";
+
+
+
+// 가격 리스트 컴포넌트
+function PriceList({ onBack }) {
+  // 샘플 데이터
+  const prices = [
+    { date: "10.11.토", price: "1,121,200원~" },
+    { date: "10.15.수", price: "1,171,700원~" },
+    { date: "10.16.목", price: "1,231,200원~" },
+    { date: "10.10.금", price: "1,439,000원~" },
+    { date: "10.14.화", price: "1,459,000원~" },
+    { date: "09.30.화", price: "1,926,000원~" },
+  ];
+  return (
+    <div style={{ maxWidth: 480, margin: "0 auto", padding: 32, background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.07)", color: "#222" }}>
+      <div style={{ fontWeight: 700, fontSize: 22, marginBottom: 18, color: "#2176ff" }}>날짜별 예상 견적 리스트</div>
+      <div style={{ borderBottom: "1px solid #eee", marginBottom: 12, display: "flex", fontWeight: 600, fontSize: 16 }}>
+        <div style={{ flex: 1 }}>날짜</div>
+        <div style={{ flex: 1, textAlign: "right" }}>가격</div>
+      </div>
+      {prices.map((item, i) => (
+        <div key={i} style={{ display: "flex", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #f5f5f5" }}>
+          <div style={{ flex: 1, fontSize: 16 }}>{item.date}</div>
+          <div style={{ flex: 1, textAlign: "right", color: "red", fontWeight: 700, fontSize: 17 }}>{item.price}</div>
+        </div>
+      ))}
+      <button onClick={onBack} style={{ marginTop: 24, width: "100%", padding: 14, borderRadius: 8, border: "none", background: "#eee", color: "#333", fontSize: 16, cursor: "pointer" }}>이전</button>
+    </div>
+  );
+}
 
 function LoadingPage({ onFinish }) {
   const [phase, setPhase] = React.useState(0);
@@ -58,6 +87,7 @@ function LoadingPage({ onFinish }) {
 }
 
 function EstimateForm() {
+  // useState 선언을 최상단에 위치시킴 (React 규칙)
   const [step, setStep] = useState(0);
   const [moveType, setMoveType] = useState("");
   const [serviceType, setServiceType] = useState("");
@@ -75,117 +105,49 @@ function EstimateForm() {
   const [loading, setLoading] = useState(false);
   const [showReview, setShowReview] = useState(false);
 
-  const moveTypeOptions = [
-    { value: "storage", label: "유산/상속 물품 보관" },
-    { value: "family", label: "가정이사" },
-    { value: "small", label: "소형이사" },
-    { value: "office", label: "기업·사무실이사" },
-  ];
-  const serviceTypeOptions = [
-    { value: "self", label: "셀프보관" },
-    { value: "pack", label: "포장이사" },
-    { value: "halfpack", label: "반포장이사" },
-    { value: "normal", label: "일반이사" },
-  ];
-  const applianceOptions = [
-    "TV/모니터", "냉장고", "김치냉장고", "세탁기", "건조기", "에어컨", "의류관리기", "안마의자",
-    "전자레인지", "가스레인지/인덕션", "공기청정기", "청소기", "정수기", "비데", "운동용품", "PC/데스크탑", "기타"
-  ];
-  const furnitureOptions = [
-    "침대 매트리스", "침대 프레임", "책상", "의자", "소파", "테이블", "수납장", "서랍장", "책장", "옷장", "행거", "화장대"
-  ];
-  const envOptions = ["엘리베이터 사용", "계단 사용", "사다리차 사용"];
-
-  const handleToggle = (list, setList, value) => {
-    setList(prev => prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]);
-  };
-
-  // 날짜 스텝(2-1) 제거: 0(유형)→1(서비스)→2(가전)→3(가구)→4(출발)→5(도착)
-  const handleNext = () => setStep(step === 1 ? 3 : step + 1);
-  const handleBack = () => setStep(step - 1);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-    }, 4400);
-  };
-
-  if (loading) return <LoadingPage onFinish={() => setLoading(false)} />;
+  // step 5에서 가격 리스트 보여주기 (한 칸씩 당김)
   if (showReview) {
-    // 후기/리뷰 이미지 샘플 (6개)
-    // review2~review6.png로 교체
-    const reviewImages = [
-      "/review2.png",
-      "/review3.png",
-      "/review4.png",
-      "/review5.png",
-      "/review6.png"
-    ];
     return (
-      <div style={{ minHeight: "100vh", background: "#111", color: "#f5d76e", fontFamily: "sans-serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 32 }}>
-        <div style={{ maxWidth: 900, width: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 10 }}>
-            
-          </div>
-          <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 18, textAlign: "center" }}>
-            만약 고민이 되신다면,<br />저희 노블스토리지 이용 고객님들의 생생한 후기와<br />서비스 경험담을 확인해보시면 도움이 될 거예요!
-          </div>
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 24,
-            margin: "0 auto",
-            maxWidth: 720,
-            marginBottom: 32
-          }}>
-            {reviewImages.map((src, i) => (
-              <div key={i} style={{ width: 200, height: 200, borderRadius: 20, overflow: "hidden", background: "#222", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <img src={src} alt={`리뷰${i+1}`} style={{ width: 200, height: 200, objectFit: "cover", display: "block" }} />
-              </div>
-            ))}
-          </div>
-          <button
-            style={{
-              width: "100%",
-              padding: 16,
-              borderRadius: 8,
-              border: "none",
-              background: "#f5d76e",
-              color: "#222",
-              fontSize: 18,
-              fontWeight: 700,
-              cursor: "pointer",
-              marginTop: 10
-            }}
-            onClick={() => {
-              setSubmitted(false);
-              setShowReview(false);
-              setStep(3);
-            }}
-          >
-            다시 이어서 견적 요청하기
-          </button>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, marginTop: 18 }}>
-            <a
-              href="https://www.noblestorage.co.kr/"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#f5d76e", fontWeight: 700, fontSize: 16, textDecoration: "underline" }}
-            >
-              노블스토리지 홈페이지 바로가기
-            </a>
-            <a
-              href="https://blog.naver.com/noblestorage"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#f5d76e", fontWeight: 700, fontSize: 16, textDecoration: "underline" }}
-            >
-              블로그 후기 더 보기
-            </a>
-          </div>
+      <div style={{ color: '#fff', background: '#111', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>
+        <div style={{ color: "#f5d76e", fontWeight: 600, fontSize: 20, marginBottom: 32, textAlign: "center" }}>
+          만약 고민이 되신다면,<br />
+          저희 노블스토리지 이용 고객님들의 생생한 후기와<br />
+          서비스 경험담을 확인해보시면 도움이 될 거예요!
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 24, marginBottom: 40 }}>
+          <img src="/review1.png" alt="리뷰1" style={{ width: 180, height: 120, borderRadius: 16, objectFit: "cover" }} />
+          <img src="/review2.png" alt="리뷰2" style={{ width: 180, height: 120, borderRadius: 16, objectFit: "cover" }} />
+          <img src="/review3.png" alt="리뷰3" style={{ width: 180, height: 120, borderRadius: 16, objectFit: "cover" }} />
+          <img src="/review4.png" alt="리뷰4" style={{ width: 180, height: 120, borderRadius: 16, objectFit: "cover" }} />
+          <img src="/review5.png" alt="리뷰5" style={{ width: 180, height: 120, borderRadius: 16, objectFit: "cover" }} />
+          <img src="/review6.png" alt="리뷰6" style={{ width: 180, height: 120, borderRadius: 16, objectFit: "cover" }} />
+        </div>
+        <button
+          style={{
+            width: 400,
+            maxWidth: "90vw",
+            padding: 18,
+            borderRadius: 8,
+            border: "none",
+            background: "#f5d76e",
+            color: "#222",
+            fontSize: 20,
+            fontWeight: 700,
+            cursor: "pointer",
+            marginBottom: 18
+          }}
+          onClick={() => {
+            setShowReview(false);
+            setSubmitted(false);
+            setStep(7);
+          }}
+        >
+          다시 이어서 견적 요청하기
+        </button>
+        <div style={{ color: "#f5d76e", fontSize: 16, marginTop: 8, textAlign: "center" }}>
+          <a href="https://noblestorage.co.kr" target="_blank" rel="noopener noreferrer" style={{ color: "#f5d76e", textDecoration: "underline", fontWeight: 600 }}>노블스토리지 홈페이지 바로가기</a>
+          <br />
+          <a href="https://blog.naver.com/noblestorage" target="_blank" rel="noopener noreferrer" style={{ color: "#f5d76e", textDecoration: "underline", fontWeight: 600 }}>블로그 후기 더 보기</a>
         </div>
       </div>
     );
@@ -214,7 +176,116 @@ function EstimateForm() {
               fontWeight: 700,
               cursor: "pointer"
             }}
-            onClick={() => window.location.reload()}
+            onClick={() => {
+              setSubmitted(false);
+              setStep(7);
+            }}
+          >
+            바로 견적 이어서 진행하기
+          </button>
+          <button
+            style={{
+              flex: 1,
+              padding: "14px 0",
+              borderRadius: 8,
+              border: "none",
+              background: "#222",
+              color: "#f5d76e",
+              fontSize: 17,
+              fontWeight: 700,
+              cursor: "pointer",
+              borderColor: "#f5d76e",
+              borderWidth: 2,
+              borderStyle: "solid"
+            }}
+            onClick={() => setShowReview(true)}
+          >
+            고민해볼게요
+          </button>
+        </div>
+      </div>
+    );
+  }
+  if (step === 7) {
+    return <PriceList onBack={() => setStep(5)} />;
+  }
+  if (step === 6) {
+    return <LoadingPage onFinish={() => setSubmitted(true)} />;
+  }
+
+  const moveTypeOptions = [
+    { value: "storage", label: "유산/상속 물품 보관" },
+    { value: "family", label: "가정이사" },
+    { value: "small", label: "소형이사" },
+    { value: "office", label: "기업·사무실이사" },
+  ];
+  const serviceTypeOptions = [
+    { value: "basic", label: "기본 서비스" },
+    { value: "premium", label: "프리미엄 서비스" },
+    { value: "storage", label: "보관 서비스" },
+    { value: "packing", label: "포장 서비스" },
+  ];
+  const applianceOptions = [
+    "냉장고", "세탁기", "TV", "에어컨", "전자레인지", "청소기", "컴퓨터", "기타"
+  ];
+  const furnitureOptions = [
+    "침대", "옷장", "책상", "소파", "식탁", "의자", "서랍장", "기타"
+  ];
+  const envOptions = [
+    "엘리베이터 있음", "계단만 있음", "주차불가", "주차가능", "좁은 골목", "넓은 도로"
+  ];
+
+  // 토글 핸들러
+  function handleToggle(list, setList, value) {
+    if (list.includes(value)) {
+      setList(list.filter(v => v !== value));
+    } else {
+      setList([...list, value]);
+    }
+  }
+
+  // 스텝 이동 핸들러
+  function handleNext() {
+    setStep(step + 1);
+  }
+  function handleBack() {
+    setStep(step - 1);
+  }
+
+  // 폼 제출 핸들러 (임시)
+  function handleSubmit(e) {
+    e.preventDefault();
+    setSubmitted(true);
+  }
+
+  if (submitted) {
+    return (
+      <div style={{ maxWidth: 480, margin: "0 auto", padding: 32, textAlign: "center", fontFamily: "sans-serif", background: "#111", color: "#f5d76e", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ fontSize: 22, fontWeight: 600, marginBottom: 18 }}>견적 요청이 접수되었습니다!</div>
+        <div style={{ color: "#f5d76e", fontSize: 16, marginBottom: 30, opacity: 0.8 }}>
+          입력하신 정보를 바탕으로 빠르게 연락드릴게요.<br />
+          감사합니다.
+        </div>
+        <div style={{ fontSize: 17, color: "#f5d76e", marginBottom: 18, marginTop: 10, fontWeight: 500 }}>
+          이제 더 자세한 맞춤 견적을 위해<br />몇 가지 정보를 여쭤봐도 될까요?
+        </div>
+        <div style={{ display: "flex", gap: 16, justifyContent: "center", width: "100%", marginBottom: 10 }}>
+          <button
+            style={{
+              flex: 1,
+              padding: "14px 0",
+              borderRadius: 8,
+              border: "none",
+              background: "#f5d76e",
+              color: "#222",
+              fontSize: 17,
+              fontWeight: 700,
+              cursor: "pointer"
+            }}
+            onClick={() => {
+              setSubmitted(false);
+              setStep(7);
+            }}
           >
             바로 견적 이어서 진행하기
           </button>
@@ -401,11 +472,9 @@ function EstimateForm() {
             <button type="button" onClick={handleBack} style={{ marginTop: 10, background: "none", color: mainColor, border: "none", fontSize: 16, cursor: "pointer", transition: "color 0.5s cubic-bezier(.4,0,.2,1)" }}>이전</button>
           </>
         )}
-        {/* 날짜 선택 달력: 월별/일별 요금 랜덤 표시 */}
-
-        {step === 3 && (
+        {step === 2 && (
           <>
-            <div style={{ fontWeight: 600, marginBottom: 10, fontSize: 16, textAlign: "center" }}>2-2. 옮길 가전제품 목록을 알려주세요!</div>
+            <div style={{ fontWeight: 600, marginBottom: 10, fontSize: 16, textAlign: "center" }}>2-1. 옮길 가전제품 목록을 알려주세요!</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center", maxWidth: 400, marginBottom: 24 }}>
               {applianceOptions.map(opt => (
                 <div
@@ -455,9 +524,9 @@ function EstimateForm() {
             <button type="button" onClick={handleBack} style={{ marginTop: 10, background: "none", color: "#f5d76e", border: "none", fontSize: 16, cursor: "pointer" }}>이전</button>
           </>
         )}
-        {step === 4 && (
+        {step === 3 && (
           <>
-            <div style={{ fontWeight: 600, marginBottom: 10, fontSize: 16, textAlign: "center" }}>2-3. 옮길 가구 목록을 알려주세요!</div>
+            <div style={{ fontWeight: 600, marginBottom: 10, fontSize: 16, textAlign: "center" }}>2-2. 옮길 가구 목록을 알려주세요!</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 10, justifyContent: "center", maxWidth: 400, marginBottom: 24 }}>
               {furnitureOptions.map(opt => (
                 <div
@@ -507,9 +576,9 @@ function EstimateForm() {
             <button type="button" onClick={handleBack} style={{ marginTop: 10, background: "none", color: "#f5d76e", border: "none", fontSize: 16, cursor: "pointer" }}>이전</button>
           </>
         )}
-        {step === 5 && (
+        {step === 4 && (
           <>
-            <div style={{ fontWeight: 600, marginBottom: 10, fontSize: 16, textAlign: "center" }}>2-4. 출발지는 어떤 환경인가요?</div>
+            <div style={{ fontWeight: 600, marginBottom: 10, fontSize: 16, textAlign: "center" }}>2-3. 출발지는 어떤 환경인가요?</div>
             <input
               type="text"
               value={departDesc}
@@ -575,7 +644,7 @@ function EstimateForm() {
             <button type="button" onClick={handleBack} style={{ marginTop: 10, background: "none", color: "#f5d76e", border: "none", fontSize: 16, cursor: "pointer" }}>이전</button>
           </>
         )}
-        {step === 6 && (
+        {step === 5 && (
           <>
             <div style={{ fontWeight: 600, marginBottom: 10, fontSize: 16, textAlign: "center" }}>2-5. 도착지는 어떤 환경인가요?</div>
             <input
@@ -622,7 +691,8 @@ function EstimateForm() {
               ))}
             </div>
             <button
-              type="submit"
+              type="button"
+              onClick={() => setStep(6)}
               disabled={!arriveDesc || arriveEnv.length === 0}
               style={{
                 width: "100%",
@@ -637,7 +707,7 @@ function EstimateForm() {
                 fontWeight: 700
               }}
             >
-              간단 견적 요청하기
+              간단견적 요청
             </button>
             <button type="button" onClick={handleBack} style={{ marginTop: 10, background: "none", color: "#f5d76e", border: "none", fontSize: 16, cursor: "pointer" }}>이전</button>
           </>
