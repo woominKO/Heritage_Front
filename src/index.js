@@ -3,76 +3,6 @@ import { createRoot } from "react-dom/client";
 import MoveTypeForm from "./MoveTypeForm";
 import MoveItemForm from "./MoveItemForm";
 
-function RegionSelectForm({ onBack, onNext }) {
-  const [region, setRegion] = useState("");
-  const handleNext = () => {
-    if (region) {
-      onNext(region);
-    }
-  };
-  return (
-    <div style={{ maxWidth: 400, margin: "0 auto", fontFamily: "sans-serif" }}>
-      <h3>거주지역을 선택해주세요.</h3>
-      <div style={{ display: "flex", gap: 12, margin: "32px 0 24px 0" }}>
-        <div
-          onClick={() => setRegion("안산")}
-          style={{
-            padding: "16px 36px",
-            borderRadius: 32,
-            border: region === "안산" ? "2px solid #4f6cff" : "1px solid #ddd",
-            background: region === "안산" ? "#e6f0ff" : "#f8f8f8",
-            color: region === "안산" ? "#2176ff" : "#222",
-            fontWeight: region === "안산" ? 700 : 400,
-            fontSize: 18,
-            cursor: "pointer",
-            minWidth: 100,
-            textAlign: "center",
-            transition: "all 0.18s",
-            boxShadow: region === "안산" ? "0 2px 8px rgba(33,118,255,0.08)" : "none",
-            outline: "none",
-            userSelect: "none"
-          }}
-        >
-          안산
-        </div>
-      </div>
-      <button
-        style={{
-          width: "100%",
-          padding: 16,
-          borderRadius: 8,
-          border: "none",
-          background: region ? "#4f6cff" : "#eee",
-          color: region ? "#fff" : "#aaa",
-          fontSize: 18,
-          marginTop: 16,
-          cursor: region ? "pointer" : "not-allowed",
-        }}
-        disabled={!region}
-        onClick={handleNext}
-      >
-        다음
-      </button>
-      <button
-        style={{
-          width: "100%",
-          padding: 10,
-          borderRadius: 8,
-          border: "none",
-          background: "#eee",
-          color: "#333",
-          fontSize: 16,
-          marginTop: 8,
-          cursor: "pointer",
-        }}
-        onClick={onBack}
-      >
-        이전
-      </button>
-    </div>
-  );
-}
-
 function LoadingPage({ onFinish }) {
   const [phase, setPhase] = React.useState(0);
   React.useEffect(() => {
@@ -122,7 +52,9 @@ function EstimateForm() {
   const [step, setStep] = useState(0);
   const [moveType, setMoveType] = useState("");
   const [serviceType, setServiceType] = useState("");
-  const [date, setDate] = useState("");
+  // const [date, setDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
+  const [selectedPrice, setSelectedPrice] = useState(null);
   const [appliances, setAppliances] = useState([]);
   const [furniture, setFurniture] = useState([]);
   const [departEnv, setDepartEnv] = useState([]);
@@ -159,6 +91,7 @@ function EstimateForm() {
     setList(prev => prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]);
   };
 
+  // 날짜 스텝(2-1) 제거: 0(유형)→1(서비스)→2(가전)→3(가구)→4(출발)→5(도착)
   const handleNext = () => setStep(step + 1);
   const handleBack = () => setStep(step - 1);
 
@@ -174,7 +107,14 @@ function EstimateForm() {
   if (loading) return <LoadingPage onFinish={() => setLoading(false)} />;
   if (showReview) {
     // 후기/리뷰 이미지 샘플 (6개)
-    const reviewImages = Array(6).fill("/review.png");
+    // review2~review6.png로 교체
+    const reviewImages = [
+      "/review2.png",
+      "/review3.png",
+      "/review4.png",
+      "/review5.png",
+      "/review6.png"
+    ];
     return (
       <div style={{ minHeight: "100vh", background: "#111", color: "#f5d76e", fontFamily: "sans-serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 32 }}>
         <div style={{ maxWidth: 900, width: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
@@ -448,46 +388,18 @@ function EstimateForm() {
             <button type="button" onClick={handleBack} style={{ marginTop: 10, background: "none", color: mainColor, border: "none", fontSize: 16, cursor: "pointer", transition: "color 0.5s cubic-bezier(.4,0,.2,1)" }}>이전</button>
           </>
         )}
+        {/* 날짜 선택 달력: 월별/일별 요금 랜덤 표시 */}
         {step === 2 && (
-          <>
-            <div style={{ fontWeight: 600, marginBottom: 10, fontSize: 16, textAlign: "center" }}>2-1. 이사를 언제쯤 계획하고 계신가요?</div>
-            <input
-              type="date"
-              value={date}
-              onChange={e => setDate(e.target.value)}
-              style={{
-                padding: "11px 18px",
-                borderRadius: 10,
-                border: "1px solid #f5d76e",
-                fontSize: 15,
-                background: "#222",
-                color: "#f5d76e",
-                marginTop: 4,
-                width: 180,
-                marginBottom: 24
-              }}
-            />
-            <button
-              type="button"
-              onClick={handleNext}
-              disabled={!date}
-              style={{
-                width: "100%",
-                padding: 16,
-                borderRadius: 8,
-                border: "none",
-                background: date ? "#f5d76e" : "#444",
-                color: date ? "#222" : "#aaa",
-                fontSize: 18,
-                marginTop: 8,
-                cursor: date ? "pointer" : "not-allowed",
-                fontWeight: 700
-              }}
-            >
-              다음
-            </button>
-            <button type="button" onClick={handleBack} style={{ marginTop: 10, background: "none", color: "#f5d76e", border: "none", fontSize: 16, cursor: "pointer" }}>이전</button>
-          </>
+          <DatePriceCalendar
+            selectedDate={selectedDate}
+            selectedPrice={selectedPrice}
+            onSelect={(date, price) => {
+              setSelectedDate(date);
+              setSelectedPrice(price);
+              setStep(3);
+            }}
+            onBack={handleBack}
+          />
         )}
         {step === 3 && (
           <>
@@ -740,3 +652,49 @@ function App() {
 const container = document.getElementById("root");
 const root = createRoot(container);
 root.render(<App />);
+
+// 날짜+요금 달력 컴포넌트
+function DatePriceCalendar({ selectedDate, selectedPrice, onSelect, onBack }) {
+  const year = 2026;
+  const month = 2; // 2월
+  // 요금 샘플: 67.9, 69.9, 74.9, 89.9, 94.9, 149.9만
+  const priceList = [67.9, 69.9, 74.9, 89.9, 94.9, 149.9];
+  const daysInMonth = new Date(year, month, 0).getDate();
+  const firstDay = new Date(year, month - 1, 1).getDay();
+  const prices = Array(daysInMonth).fill(0).map(() => priceList[Math.floor(Math.random() * priceList.length)]);
+
+  return (
+    <div style={{ maxWidth: 400, margin: "0 auto", fontFamily: "sans-serif", background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.07)", padding: 24 }}>
+      <div style={{ fontWeight: 700, fontSize: 22, textAlign: "center", marginBottom: 18, color: "#222" }}>{year}. {month.toString().padStart(2, "0")}. </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(7,1fr)", gap: 6, color: "#e55" }}>
+        {["일", "월", "화", "수", "목", "금", "토"].map(d => <div key={d} style={{ textAlign: "center", fontWeight: 600 }}>{d}</div>)}
+        {Array(firstDay).fill(0).map((_, i) => <div key={"empty"+i}></div>)}
+        {Array(daysInMonth).fill(0).map((_, i) => {
+          const dateStr = `${year}-${month.toString().padStart(2,"0")}-${(i+1).toString().padStart(2,"0")}`;
+          const isSelected = selectedDate === dateStr;
+          return (
+            <div key={i}
+              onClick={() => onSelect && onSelect(dateStr, prices[i])}
+              style={{
+                textAlign: "center",
+                padding: 6,
+                borderRadius: 8,
+                background: isSelected ? "#5a5ad6" : "#fff",
+                color: isSelected ? "#fff" : "#e55",
+                fontWeight: isSelected ? 700 : 400,
+                cursor: "pointer",
+                border: isSelected ? "2px solid #5a5ad6" : "1px solid #eee",
+                marginBottom: 2,
+                minHeight: 38
+              }}
+            >
+              <div>{i+1}</div>
+              <div style={{ fontSize: 13, marginTop: 2 }}>{prices[i]}만</div>
+            </div>
+          );
+        })}
+      </div>
+      <button onClick={onBack} style={{ marginTop: 18, width: "100%", padding: 12, borderRadius: 8, border: "none", background: "#eee", color: "#333", fontSize: 16, cursor: "pointer" }}>이전</button>
+    </div>
+  );
+}
