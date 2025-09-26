@@ -114,6 +114,7 @@ function EstimateForm() {
   const [situation, setSituation] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showReview, setShowReview] = useState(false);
 
   const moveTypeOptions = [
     { value: "storage", label: "유산/상속 물품 보관" },
@@ -153,18 +154,131 @@ function EstimateForm() {
   };
 
   if (loading) return <LoadingPage />;
+  if (showReview) {
+    // 후기/리뷰 이미지 샘플 (6개)
+    const reviewImages = Array(6).fill("/review.png");
+    return (
+      <div style={{ minHeight: "100vh", background: "#111", color: "#f5d76e", fontFamily: "sans-serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 32 }}>
+        <div style={{ maxWidth: 900, width: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 10 }}>
+            
+          </div>
+          <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 18, textAlign: "center" }}>
+            만약 고민이 되신다면,<br />저희 노블스토리지 이용 고객님들의 생생한 후기와<br />서비스 경험담을 확인해보시면 도움이 될 거예요!
+          </div>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: 24,
+            margin: "0 auto",
+            maxWidth: 720,
+            marginBottom: 32
+          }}>
+            {reviewImages.map((src, i) => (
+              <div key={i} style={{ width: 200, height: 200, borderRadius: 20, overflow: "hidden", background: "#222", boxShadow: "0 2px 8px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <img src={src} alt={`리뷰${i+1}`} style={{ width: 200, height: 200, objectFit: "cover", display: "block" }} />
+              </div>
+            ))}
+          </div>
+          <button
+            style={{
+              width: "100%",
+              padding: 16,
+              borderRadius: 8,
+              border: "none",
+              background: "#f5d76e",
+              color: "#222",
+              fontSize: 18,
+              fontWeight: 700,
+              cursor: "pointer",
+              marginTop: 10
+            }}
+            onClick={() => window.location.reload()}
+          >
+            다시 이어서 견적 요청하기
+          </button>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6, marginTop: 18 }}>
+            <a
+              href="https://www.noblestorage.co.kr/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#f5d76e", fontWeight: 700, fontSize: 16, textDecoration: "underline" }}
+            >
+              노블스토리지 홈페이지 바로가기
+            </a>
+            <a
+              href="https://blog.naver.com/noblestorage"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#f5d76e", fontWeight: 700, fontSize: 16, textDecoration: "underline" }}
+            >
+              블로그 후기 더 보기
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (submitted) {
     return (
-      <div style={{ maxWidth: 420, margin: "0 auto", padding: 32, textAlign: "center", fontFamily: "sans-serif", background: "#111", color: "#f5d76e", minHeight: "100vh" }}>
+      <div style={{ maxWidth: 480, margin: "0 auto", padding: 32, textAlign: "center", fontFamily: "sans-serif", background: "#111", color: "#f5d76e", minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
         <div style={{ fontSize: 22, fontWeight: 600, marginBottom: 18 }}>견적 요청이 접수되었습니다!</div>
         <div style={{ color: "#f5d76e", fontSize: 16, marginBottom: 30, opacity: 0.8 }}>
           입력하신 정보를 바탕으로 빠르게 연락드릴게요.<br />
           감사합니다.
         </div>
+        <div style={{ fontSize: 17, color: "#f5d76e", marginBottom: 18, marginTop: 10, fontWeight: 500 }}>
+          이제 더 자세한 맞춤 견적을 위해<br />몇 가지 정보를 여쭤봐도 될까요?
+        </div>
+        <div style={{ display: "flex", gap: 16, justifyContent: "center", width: "100%", marginBottom: 10 }}>
+          <button
+            style={{
+              flex: 1,
+              padding: "14px 0",
+              borderRadius: 8,
+              border: "none",
+              background: "#f5d76e",
+              color: "#222",
+              fontSize: 17,
+              fontWeight: 700,
+              cursor: "pointer"
+            }}
+            onClick={() => window.location.reload()}
+          >
+            바로 견적 이어서 진행하기
+          </button>
+          <button
+            style={{
+              flex: 1,
+              padding: "14px 0",
+              borderRadius: 8,
+              border: "none",
+              background: "#222",
+              color: "#f5d76e",
+              fontSize: 17,
+              fontWeight: 700,
+              cursor: "pointer",
+              borderColor: "#f5d76e",
+              borderWidth: 2,
+              borderStyle: "solid"
+            }}
+            onClick={() => setShowReview(true)}
+          >
+            고민해볼게요
+          </button>
+        </div>
       </div>
     );
   }
 
+  // 첫 페이지(스텝0)용 로고/테마
+  const logo2Header = (
+    <div style={{ display: "flex", alignItems: "center", gap: 18, padding: "38px 0 18px 0", justifyContent: "center" }}>
+      <img src="/logo2.png" alt="logo2" style={{ height: 60, width: 60, objectFit: "contain" }} />
+      <span style={{ fontFamily: 'cursive', fontSize: 34, color: "#2176ff", fontWeight: 600, letterSpacing: 1 }}>Noble Storage</span>
+    </div>
+  );
+  // 헤리티지(노랑/검정) 테마 로고
   const logoHeader = (
     <div style={{ display: "flex", alignItems: "center", gap: 18, padding: "38px 0 18px 0", justifyContent: "center" }}>
       <img src="/logo.png" alt="logo" style={{ height: 54, width: 54, objectFit: "contain" }} />
@@ -172,9 +286,29 @@ function EstimateForm() {
     </div>
   );
 
+  // 첫 페이지(스텝0) - 흰/파랑 테마, 이후(헤리티지) - 검정/노랑 테마
+  const isFirstPage = step === 0;
+  const isHeritage = moveType === "storage";
+  const mainBg = isFirstPage ? "#fff" : "#111";
+  const mainColor = isFirstPage ? "#2176ff" : "#f5d76e";
+  const mainBtnBg = isFirstPage ? "#2176ff" : "#f5d76e";
+  const mainBtnColor = isFirstPage ? "#fff" : "#222";
+  const mainBtnDisabledBg = isFirstPage ? "#eee" : "#444";
+  const mainBtnDisabledColor = isFirstPage ? "#aaa" : "#aaa";
+  const mainCardBg = isFirstPage ? "#f8faff" : "#222";
+  const mainCardBorder = isFirstPage ? "1px solid #b5d0ff" : "1px solid #444";
+  const mainCardActiveBorder = isFirstPage ? "2px solid #2176ff" : "2px solid #f5d76e";
+  const mainCardActiveBg = isFirstPage ? "#e6f0ff" : "#f5d76e";
+  const mainCardActiveColor = isFirstPage ? "#2176ff" : "#222";
+  const mainCardColor = isFirstPage ? "#2176ff" : "#f5d76e";
+
   return (
-    <div style={{ minHeight: "100vh", background: "#111" }}>
-      {logoHeader}
+    <div style={{
+      minHeight: "100vh",
+      background: mainBg,
+      transition: "background 0.5s cubic-bezier(.4,0,.2,1)"
+    }}>
+      {isFirstPage ? logo2Header : logoHeader}
       <form
         onSubmit={handleSubmit}
         style={{
@@ -182,19 +316,20 @@ function EstimateForm() {
           margin: "0 auto",
           padding: 32,
           fontFamily: "sans-serif",
-          color: "#f5d76e",
+          color: mainColor,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center"
+          alignItems: "center",
+          transition: "color 0.5s cubic-bezier(.4,0,.2,1)"
         }}
       >
         {step === 0 && (
           <>
-            <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 18, color: "#f5d76e", textAlign: "center" }}>
+            <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 18, color: mainColor, textAlign: "center" }}>
               안녕하세요!<br />이사나 보관 서비스를 원하시면,<br />아래 항목을 입력해 주세요!
             </div>
             <div style={{ marginBottom: 24, width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <div style={{ fontWeight: 600, marginBottom: 10, fontSize: 16, textAlign: "center" }}>1. 어느 유형의 이사를 계획하고 계신가요?</div>
+              <div style={{ fontWeight: 600, marginBottom: 10, fontSize: 16, textAlign: "center", color: mainColor }}>1. 어느 유형의 이사를 계획하고 계신가요?</div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
                 {moveTypeOptions.map(opt => (
                   <div
@@ -203,16 +338,16 @@ function EstimateForm() {
                     style={{
                       padding: "13px 24px",
                       borderRadius: 32,
-                      border: moveType === opt.value ? "2px solid #f5d76e" : "1px solid #444",
-                      background: moveType === opt.value ? "#f5d76e" : "#222",
-                      color: moveType === opt.value ? "#222" : "#f5d76e",
+                      border: moveType === opt.value ? mainCardActiveBorder : mainCardBorder,
+                      background: moveType === opt.value ? mainCardActiveBg : mainCardBg,
+                      color: moveType === opt.value ? mainCardActiveColor : mainCardColor,
                       fontWeight: moveType === opt.value ? 700 : 400,
                       fontSize: 15,
                       cursor: "pointer",
                       minWidth: 90,
                       textAlign: "center",
-                      transition: "all 0.18s",
-                      boxShadow: moveType === opt.value ? "0 2px 8px rgba(245,215,110,0.13)" : "none",
+                      transition: "all 0.18s, background 0.5s cubic-bezier(.4,0,.2,1), color 0.5s cubic-bezier(.4,0,.2,1), border 0.5s cubic-bezier(.4,0,.2,1)",
+                      boxShadow: moveType === opt.value ? (isFirstPage ? "0 2px 8px rgba(33,118,255,0.13)" : "0 2px 8px rgba(245,215,110,0.13)") : "none",
                       outline: "none",
                       userSelect: "none"
                     }}
@@ -231,12 +366,13 @@ function EstimateForm() {
                 padding: 16,
                 borderRadius: 8,
                 border: "none",
-                background: moveType ? "#f5d76e" : "#444",
-                color: moveType ? "#222" : "#aaa",
+                background: moveType ? mainBtnBg : mainBtnDisabledBg,
+                color: moveType ? mainBtnColor : mainBtnDisabledColor,
                 fontSize: 18,
                 marginTop: 8,
                 cursor: moveType ? "pointer" : "not-allowed",
-                fontWeight: 700
+                fontWeight: 700,
+                transition: "background 0.5s cubic-bezier(.4,0,.2,1), color 0.5s cubic-bezier(.4,0,.2,1)"
               }}
             >
               다음
@@ -245,7 +381,7 @@ function EstimateForm() {
         )}
         {step === 1 && (
           <>
-            <div style={{ fontWeight: 600, marginBottom: 10, fontSize: 16, textAlign: "center" }}>2. 어떤 서비스가 적합할지 알려주세요!</div>
+            <div style={{ fontWeight: 600, marginBottom: 10, fontSize: 16, textAlign: "center", color: mainColor }}>2. 어떤 서비스가 적합할지 알려주세요!</div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center", marginBottom: 24 }}>
               {serviceTypeOptions.map(opt => (
                 <div
@@ -254,16 +390,16 @@ function EstimateForm() {
                   style={{
                     padding: "13px 24px",
                     borderRadius: 32,
-                    border: serviceType === opt.value ? "2px solid #f5d76e" : "1px solid #444",
-                    background: serviceType === opt.value ? "#f5d76e" : "#222",
-                    color: serviceType === opt.value ? "#222" : "#f5d76e",
+                    border: serviceType === opt.value ? mainCardActiveBorder : mainCardBorder,
+                    background: serviceType === opt.value ? mainCardActiveBg : mainCardBg,
+                    color: serviceType === opt.value ? mainCardActiveColor : mainCardColor,
                     fontWeight: serviceType === opt.value ? 700 : 400,
                     fontSize: 15,
                     cursor: "pointer",
                     minWidth: 90,
                     textAlign: "center",
-                    transition: "all 0.18s",
-                    boxShadow: serviceType === opt.value ? "0 2px 8px rgba(245,215,110,0.13)" : "none",
+                    transition: "all 0.18s, background 0.5s cubic-bezier(.4,0,.2,1), color 0.5s cubic-bezier(.4,0,.2,1), border 0.5s cubic-bezier(.4,0,.2,1)",
+                    boxShadow: serviceType === opt.value ? (isFirstPage ? "0 2px 8px rgba(33,118,255,0.13)" : "0 2px 8px rgba(245,215,110,0.13)") : "none",
                     outline: "none",
                     userSelect: "none"
                   }}
@@ -281,8 +417,8 @@ function EstimateForm() {
                 padding: 16,
                 borderRadius: 8,
                 border: "none",
-                background: serviceType ? "#f5d76e" : "#444",
-                color: serviceType ? "#222" : "#aaa",
+                background: serviceType ? mainBtnBg : mainBtnDisabledBg,
+                color: serviceType ? mainBtnColor : mainBtnDisabledColor,
                 fontSize: 18,
                 marginTop: 8,
                 cursor: serviceType ? "pointer" : "not-allowed",
@@ -291,7 +427,7 @@ function EstimateForm() {
             >
               다음
             </button>
-            <button type="button" onClick={handleBack} style={{ marginTop: 10, background: "none", color: "#f5d76e", border: "none", fontSize: 16, cursor: "pointer" }}>이전</button>
+            <button type="button" onClick={handleBack} style={{ marginTop: 10, background: "none", color: mainColor, border: "none", fontSize: 16, cursor: "pointer", transition: "color 0.5s cubic-bezier(.4,0,.2,1)" }}>이전</button>
           </>
         )}
         {step === 2 && (
@@ -554,8 +690,7 @@ function EstimateForm() {
               ))}
             </div>
             <button
-              type="button"
-              onClick={handleNext}
+              type="submit"
               disabled={!arriveDesc || arriveEnv.length === 0}
               style={{
                 width: "100%",
@@ -567,47 +702,6 @@ function EstimateForm() {
                 fontSize: 18,
                 marginTop: 8,
                 cursor: arriveDesc && arriveEnv.length > 0 ? "pointer" : "not-allowed",
-                fontWeight: 700
-              }}
-            >
-              다음
-            </button>
-            <button type="button" onClick={handleBack} style={{ marginTop: 10, background: "none", color: "#f5d76e", border: "none", fontSize: 16, cursor: "pointer" }}>이전</button>
-          </>
-        )}
-        {step === 7 && (
-          <>
-            <div style={{ fontWeight: 600, marginBottom: 10, fontSize: 16, textAlign: "center" }}>3. 현장 상황을 간단하게 알려주세요!</div>
-            <input
-              type="text"
-              value={situation}
-              onChange={e => setSituation(e.target.value)}
-              placeholder="출발지·도착지 대략 위치 입력 (예: 서울 강남구 → 경기 수원시)"
-              style={{
-                width: "100%",
-                padding: "13px 16px",
-                borderRadius: 10,
-                border: "1px solid #f5d76e",
-                fontSize: 15,
-                marginTop: 4,
-                background: "#222",
-                color: "#f5d76e",
-                marginBottom: 24
-              }}
-            />
-            <button
-              type="submit"
-              disabled={!situation}
-              style={{
-                width: "100%",
-                padding: 16,
-                borderRadius: 8,
-                border: "none",
-                background: situation ? "#f5d76e" : "#444",
-                color: situation ? "#222" : "#aaa",
-                fontSize: 18,
-                marginTop: 8,
-                cursor: situation ? "pointer" : "not-allowed",
                 fontWeight: 700
               }}
             >
