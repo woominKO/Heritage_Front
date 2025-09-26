@@ -15,19 +15,30 @@ function PriceList({ onBack }) {
     { date: "09.30.화", price: "1,926,000원~" },
   ];
   return (
-    <div style={{ maxWidth: 480, margin: "0 auto", padding: 32, background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.07)", color: "#222" }}>
-      <div style={{ fontWeight: 700, fontSize: 22, marginBottom: 18, color: "#2176ff" }}>날짜별 예상 견적 리스트</div>
-      <div style={{ borderBottom: "1px solid #eee", marginBottom: 12, display: "flex", fontWeight: 600, fontSize: 16 }}>
-        <div style={{ flex: 1 }}>날짜</div>
-        <div style={{ flex: 1, textAlign: "right" }}>가격</div>
-      </div>
-      {prices.map((item, i) => (
-        <div key={i} style={{ display: "flex", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #f5f5f5" }}>
-          <div style={{ flex: 1, fontSize: 16 }}>{item.date}</div>
-          <div style={{ flex: 1, textAlign: "right", color: "red", fontWeight: 700, fontSize: 17 }}>{item.price}</div>
+    <div style={{ maxWidth: 480, margin: "0 auto", padding: 0, background: "#fff", borderRadius: 16, boxShadow: "0 2px 12px rgba(0,0,0,0.07)", color: "#222" }}>
+      <div style={{ background: "#111", borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: "32px 0 18px 0", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", marginBottom: 0 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14, justifyContent: "center", marginBottom: 8 }}>
+          <img src="/logo.png" alt="logo" style={{ height: 38, width: 38, objectFit: "contain" }} />
+          <span style={{ fontFamily: 'cursive', fontSize: 24, color: "#f5d76e", fontWeight: 600, letterSpacing: 1 }}>Noble Heritage</span>
         </div>
-      ))}
-      <button onClick={onBack} style={{ marginTop: 24, width: "100%", padding: 14, borderRadius: 8, border: "none", background: "#eee", color: "#333", fontSize: 16, cursor: "pointer" }}>이전</button>
+        <div style={{ fontWeight: 700, fontSize: 20, color: "#f5d76e", textAlign: "center", marginBottom: 2 }}>
+          최적 견적입니다. 이용해주셔서 감사합니다.
+        </div>
+      </div>
+      <div style={{ padding: 32 }}>
+        <div style={{ fontWeight: 700, fontSize: 22, marginBottom: 18, color: "#2176ff" }}>날짜별 예상 견적 리스트</div>
+        <div style={{ borderBottom: "1px solid #eee", marginBottom: 12, display: "flex", fontWeight: 600, fontSize: 16 }}>
+          <div style={{ flex: 1 }}>날짜</div>
+          <div style={{ flex: 1, textAlign: "right" }}>가격</div>
+        </div>
+        {prices.map((item, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "center", padding: "10px 0", borderBottom: "1px solid #f5f5f5" }}>
+            <div style={{ flex: 1, fontSize: 16 }}>{item.date}</div>
+            <div style={{ flex: 1, textAlign: "right", color: "red", fontWeight: 700, fontSize: 17 }}>{item.price}</div>
+          </div>
+        ))}
+        <button onClick={onBack} style={{ marginTop: 24, width: "100%", padding: 14, borderRadius: 8, border: "none", background: "#eee", color: "#333", fontSize: 16, cursor: "pointer" }}>이전</button>
+      </div>
     </div>
   );
 }
